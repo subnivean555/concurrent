@@ -45,7 +45,6 @@ public class DateFormateExample {
         }
         countDownLatch.await();
         exec.shutdown();
-
     }
 
     private static void format() {

@@ -5,6 +5,7 @@ import weilan.concurrent.annoations.NotThreadSafe;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
@@ -17,10 +18,11 @@ public class HashMapExample {
     private static int clientNum = 5000;
     private static Map<Integer, Integer> map = new HashMap<>();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         ExecutorService exec = Executors.newCachedThreadPool();
         final Semaphore semaphore = new Semaphore(threadNum);
+        final CountDownLatch countDownLatch = new CountDownLatch(clientNum);
 
         for (int i = 0; i < clientNum; i++){
 
@@ -34,10 +36,11 @@ public class HashMapExample {
                 }catch (Exception e){
                     System.out.println(e);
                 }
+                countDownLatch.countDown();
             });
 
         }
-
+        countDownLatch.await();
         exec.shutdown();
         log.info("size : " + map.size());
     }

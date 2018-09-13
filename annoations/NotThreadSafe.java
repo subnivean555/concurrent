@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  *
  */
 
-@Target({ElementType.TYPE, ElementType.FIELD})
+@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.SOURCE)
 public @interface NotThreadSafe {
 

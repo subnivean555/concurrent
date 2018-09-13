@@ -1,22 +1,16 @@
-package weilan.concurrent.commonUnsafe;
+package weilan.concurrent.containers;
 
-import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import weilan.concurrent.annoations.ThreadSafe;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.*;
 
 @Slf4j
 @ThreadSafe
-public class CollectionSyncExample {
+public class CopyOnWriteArrayListExample {
 
 
-    private static List<Integer> list = Collections.synchronizedList(Lists.newArrayList());
+    private static CopyOnWriteArrayList<Integer> list = new CopyOnWriteArrayList<>();
 
     private static int threadTotal = 200;
     private static int clientTotal = 5000;

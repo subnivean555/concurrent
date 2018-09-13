@@ -1,23 +1,16 @@
-package weilan.concurrent.commonUnsafe;
+package weilan.concurrent.containers;
 
-import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import weilan.concurrent.annoations.ThreadSafe;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.*;
+
 
 @Slf4j
 @ThreadSafe
-public class CollectionSyncExample {
+public class CopyOnWriteArraySetExample {
 
-
-    private static List<Integer> list = Collections.synchronizedList(Lists.newArrayList());
-
+    private static CopyOnWriteArraySet<Integer> set = new CopyOnWriteArraySet<>();
     private static int threadTotal = 200;
     private static int clientTotal = 5000;
 
@@ -27,10 +20,11 @@ public class CollectionSyncExample {
         final CountDownLatch countDownLatch = new CountDownLatch(clientTotal);
 
         for (int index = 0; index < clientTotal; index++){
+            final int i = index;
             exec.execute(()->{
                 try {
                     semaphore.acquire();
-                    add();
+                    setadd(i);
                     semaphore.release();
                 }catch (Exception e){
                     e.printStackTrace();
@@ -40,12 +34,10 @@ public class CollectionSyncExample {
         }
         countDownLatch.await();
         exec.shutdown();
-        log.info("list size = {}", list.size());
+        log.info("set size = {}", set.size());
     }
 
-    private static void add() {
-        list.add(1);
+    private static void setadd(int i) {
+        set.add(i);
     }
-
-
 }

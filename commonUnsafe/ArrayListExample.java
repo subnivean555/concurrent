@@ -28,7 +28,7 @@ public class ArrayListExample {
             exec.execute(()->{
                 try {
                     semaphore.acquire();
-                    listadd();
+                    add();
                     semaphore.release();
                 }catch (Exception e){
                     e.printStackTrace();
@@ -41,7 +41,7 @@ public class ArrayListExample {
         log.info("list size = {}", list.size());
     }
 
-    private static void listadd() {
+    private static void add() {
         list.add(1);
     }
 

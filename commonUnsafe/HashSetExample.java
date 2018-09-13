@@ -28,7 +28,7 @@ public class HashSetExample {
             exec.execute(()->{
                 try {
                     semaphore.acquire();
-                    setadd(i);
+                    add(i);
                     semaphore.release();
                 }catch (Exception e){
                     e.printStackTrace();
@@ -41,7 +41,7 @@ public class HashSetExample {
         log.info("set size = {}", set.size());
     }
 
-    private static void setadd(int i) {
+    private static void add(int i) {
         set.add(i);
     }
 }

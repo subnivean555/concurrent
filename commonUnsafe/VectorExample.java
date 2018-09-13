@@ -31,7 +31,7 @@ public class VectorExample {
             exec.execute(()->{
                 try {
                     semaphore.acquire();
-                    vectorAdd();
+                    add();
                     notsafeVectorOpearation();
                     semaphore.release();
                 }catch (Exception e){
@@ -46,7 +46,7 @@ public class VectorExample {
     }
 
     @ThreadSafe
-    private static void vectorAdd() {
+    private static void add() {
         vector.add(1);
     }
 
