@@ -1,30 +1,29 @@
-package weilan.concurrent.commonUnsafe;
+package weilan.concurrent.commonunsafe;
 
 import lombok.extern.slf4j.Slf4j;
+import weilan.concurrent.annoations.NotRecommend;
 import weilan.concurrent.annoations.NotThreadSafe;
 import weilan.concurrent.annoations.ThreadSafe;
 
+import java.text.SimpleDateFormat;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 
 /**
- *  StringBuilder 是线程不安全的
- *  StringBuffer 是线程安全的, StringBuffer 中有 synchronized 来保证线程安全
+ *  SimpleDateFormat 不是一个线程安全的类, 当其被多线程使用时, 会抛出异常
  */
 
 @Slf4j
-public class StringUtilsExample {
+@NotThreadSafe
+@NotRecommend
+public class DateFormateExample {
+
+    private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
 
     private static int threadTotal = 200;
     private static int clientTotal = 5000;
-
-    @NotThreadSafe
-    private static StringBuilder stringBuilder = new StringBuilder();
-
-    @ThreadSafe
-    private static StringBuffer stringBuffer = new StringBuffer();
 
     public static void main(String[] args) throws InterruptedException {
         ExecutorService exec = Executors.newCachedThreadPool();
@@ -35,7 +34,8 @@ public class StringUtilsExample {
             exec.execute(()->{
                 try {
                     semaphore.acquire();
-                    update();
+                    //format();
+                    safeFormat();
                     semaphore.release();
                 }catch (Exception e){
                     e.printStackTrace();
@@ -45,13 +45,27 @@ public class StringUtilsExample {
         }
         countDownLatch.await();
         exec.shutdown();
-        log.info("string builder's size : " + stringBuilder.length());
-        log.info("string buffer's size : " + stringBuffer.length());
     }
 
-    private static void update() {
-        stringBuilder.append("1");
-        stringBuffer.append("1");
+    private static void format() {
+        try {
+            simpleDateFormat.parse("20180908");
+        } catch (Exception e){
+            log.error("parse excetion", e);
+        }
+    }
+
+    /**
+     * 使用线程封闭的写法来保证线程安全
+     */
+    @ThreadSafe
+    private static void safeFormat(){
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            sdf.parse("20180908");
+        } catch (Exception e){
+            log.error("parse excetion", e);
+        }
     }
 
 }

@@ -1,23 +1,30 @@
-package weilan.concurrent.commonUnsafe;
+package weilan.concurrent.commonunsafe;
 
 import lombok.extern.slf4j.Slf4j;
 import weilan.concurrent.annoations.NotThreadSafe;
+import weilan.concurrent.annoations.ThreadSafe;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 
-@Slf4j
-@NotThreadSafe
-public class ArrayListExample {
+/**
+ *  StringBuilder 是线程不安全的
+ *  StringBuffer 是线程安全的, StringBuffer 中有 synchronized 来保证线程安全
+ */
 
-    private static List<Integer> list = new ArrayList<>();
+@Slf4j
+public class StringUtilsExample {
 
     private static int threadTotal = 200;
     private static int clientTotal = 5000;
+
+    @NotThreadSafe
+    private static StringBuilder stringBuilder = new StringBuilder();
+
+    @ThreadSafe
+    private static StringBuffer stringBuffer = new StringBuffer();
 
     public static void main(String[] args) throws InterruptedException {
         ExecutorService exec = Executors.newCachedThreadPool();
@@ -28,7 +35,7 @@ public class ArrayListExample {
             exec.execute(()->{
                 try {
                     semaphore.acquire();
-                    add();
+                    update();
                     semaphore.release();
                 }catch (Exception e){
                     e.printStackTrace();
@@ -38,12 +45,13 @@ public class ArrayListExample {
         }
         countDownLatch.await();
         exec.shutdown();
-        log.info("list size = {}", list.size());
+        log.info("string builder's size : " + stringBuilder.length());
+        log.info("string buffer's size : " + stringBuffer.length());
     }
 
-    private static void add() {
-        list.add(1);
+    private static void update() {
+        stringBuilder.append("1");
+        stringBuffer.append("1");
     }
-
 
 }

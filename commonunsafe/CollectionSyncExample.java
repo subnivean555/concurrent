@@ -1,20 +1,25 @@
-package weilan.concurrent.atomicDemo;
+package weilan.concurrent.commonunsafe;
 
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import weilan.concurrent.annoations.ThreadSafe;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
-public class AtomicBooleanExample {
+@ThreadSafe
+public class CollectionSyncExample {
+
+
+    private static List<Integer> list = Collections.synchronizedList(Lists.newArrayList());
 
     private static int threadTotal = 200;
     private static int clientTotal = 5000;
-
-    private static AtomicBoolean isHappened = new AtomicBoolean(false);
 
     public static void main(String[] args) throws InterruptedException {
         ExecutorService exec = Executors.newCachedThreadPool();
@@ -25,7 +30,7 @@ public class AtomicBooleanExample {
             exec.execute(()->{
                 try {
                     semaphore.acquire();
-                    test();
+                    add();
                     semaphore.release();
                 }catch (Exception e){
                     e.printStackTrace();
@@ -35,12 +40,12 @@ public class AtomicBooleanExample {
         }
         countDownLatch.await();
         exec.shutdown();
-        log.info("isHappened : "+isHappened.get());
+        log.info("list size = {}", list.size());
     }
 
-    private static void test(){
-        if (isHappened.compareAndSet(false, true)){
-            log.info("execute");
-        }
+    private static void add() {
+        list.add(1);
     }
+
+
 }

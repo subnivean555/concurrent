@@ -1,6 +1,5 @@
-package weilan.concurrent.atomicDemo;
+package weilan.concurrent.atomic;
 
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import weilan.concurrent.annoations.NotThreadSafe;
 

@@ -1,29 +1,26 @@
-package weilan.concurrent.commonUnsafe;
+package weilan.concurrent.atomic;
 
 import lombok.extern.slf4j.Slf4j;
-import weilan.concurrent.annoations.NotRecommend;
-import weilan.concurrent.annoations.NotThreadSafe;
 import weilan.concurrent.annoations.ThreadSafe;
 
-import java.text.SimpleDateFormat;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
- *  SimpleDateFormat 不是一个线程安全的类, 当其被多线程使用时, 会抛出异常
+ *  incrementAndGet()   先加再操作
+ *  getAndIncrement()   先操作再加
  */
 
 @Slf4j
-@NotThreadSafe
-@NotRecommend
-public class DateFormateExample {
-
-    private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
-
+@ThreadSafe
+public class AtomicLongExample {
     private static int threadTotal = 200;
     private static int clientTotal = 5000;
+
+    private static AtomicLong count = new AtomicLong(0);
 
     public static void main(String[] args) throws InterruptedException {
         ExecutorService exec = Executors.newCachedThreadPool();
@@ -34,8 +31,7 @@ public class DateFormateExample {
             exec.execute(()->{
                 try {
                     semaphore.acquire();
-                    //format();
-                    safeFormat();
+                    add();
                     semaphore.release();
                 }catch (Exception e){
                     e.printStackTrace();
@@ -45,27 +41,10 @@ public class DateFormateExample {
         }
         countDownLatch.await();
         exec.shutdown();
+        log.info("count : "+count.get());
     }
 
-    private static void format() {
-        try {
-            simpleDateFormat.parse("20180908");
-        } catch (Exception e){
-            log.error("parse excetion", e);
-        }
+    private static void add(){
+        count.incrementAndGet();
     }
-
-    /**
-     * 使用线程封闭的写法来保证线程安全
-     */
-    @ThreadSafe
-    private static void safeFormat(){
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-            sdf.parse("20180908");
-        } catch (Exception e){
-            log.error("parse excetion", e);
-        }
-    }
-
 }

@@ -1,10 +1,10 @@
-package weilan.concurrent.commonUnsafe;
+package weilan.concurrent.commonunsafe;
 
 import lombok.extern.slf4j.Slf4j;
 import weilan.concurrent.annoations.NotThreadSafe;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -12,9 +12,10 @@ import java.util.concurrent.Semaphore;
 
 @Slf4j
 @NotThreadSafe
-public class HashSetExample {
+public class ArrayListExample {
 
-    private static Set<Integer> set = new HashSet<>();
+    private static List<Integer> list = new ArrayList<>();
+
     private static int threadTotal = 200;
     private static int clientTotal = 5000;
 
@@ -24,11 +25,10 @@ public class HashSetExample {
         final CountDownLatch countDownLatch = new CountDownLatch(clientTotal);
 
         for (int index = 0; index < clientTotal; index++){
-            final int i = index;
             exec.execute(()->{
                 try {
                     semaphore.acquire();
-                    add(i);
+                    add();
                     semaphore.release();
                 }catch (Exception e){
                     e.printStackTrace();
@@ -38,10 +38,12 @@ public class HashSetExample {
         }
         countDownLatch.await();
         exec.shutdown();
-        log.info("set size = {}", set.size());
+        log.info("list size = {}", list.size());
     }
 
-    private static void add(int i) {
-        set.add(i);
+    private static void add() {
+        list.add(1);
     }
+
+
 }

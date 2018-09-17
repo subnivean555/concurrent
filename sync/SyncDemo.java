@@ -1,4 +1,4 @@
-package weilan.concurrent.syncDemo;
+package weilan.concurrent.sync;
 
 import lombok.extern.slf4j.Slf4j;
 

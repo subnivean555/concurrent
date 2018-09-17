@@ -1,4 +1,4 @@
-package weilan.concurrent.commonUnsafe;
+package weilan.concurrent.commonunsafe;
 
 import lombok.extern.slf4j.Slf4j;
 import weilan.concurrent.annoations.ThreadSafe;
